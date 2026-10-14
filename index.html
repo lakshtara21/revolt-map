@@ -3,8 +3,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Revolt of 1857 - Interactive Map Activity</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revolt of 1857 | Drag and Drop Map Challenge</title>
 
 <style>
 :root {
@@ -12,8 +12,8 @@
   --blue: #2864a5;
   --green: #168454;
   --red: #c53e3e;
-  --cream: #f7f8fb;
-  --border: #dce3ec;
+  --bg: #f3f6fb;
+  --border: #d8e1ec;
 }
 
 * { box-sizing: border-box; }
@@ -21,143 +21,168 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: var(--cream);
   color: #202c3b;
+  background: var(--bg);
 }
 
 header {
   background: var(--navy);
   color: white;
-  padding: 24px 16px;
   text-align: center;
+  padding: 23px 15px;
 }
 
 header h1 { margin: 0 0 8px; font-size: 28px; }
 header p { margin: 0; line-height: 1.5; }
 
-.container {
-  max-width: 1150px;
+main {
+  max-width: 1200px;
   margin: 22px auto;
-  padding: 0 16px;
+  padding: 0 15px;
 }
 
-.instructions, .panel {
+.panel {
   background: white;
+  padding: 18px;
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 18px;
   margin-bottom: 18px;
 }
 
-.instructions h2, .panel h2 {
-  color: var(--navy);
-  margin-top: 0;
-}
+h2 { color: var(--navy); margin-top: 0; }
 
-.workspace {
+.layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
-  gap: 20px;
+  grid-template-columns: minmax(0, 1.2fr) minmax(290px, .8fr);
+  gap: 18px;
   align-items: start;
 }
 
-.map-card {
+.map-area {
   background: white;
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 16px;
+  min-width: 0;
 }
-
-.map-card h2 { margin-top: 0; color: var(--navy); }
 
 .map-wrap {
   position: relative;
   width: 100%;
-  max-width: 600px;
+  max-width: 650px;
   margin: auto;
-  background: white;
+  line-height: 0;
 }
 
 .map-wrap img {
-  display: block;
   width: 100%;
   height: auto;
+  display: block;
 }
 
-.marker {
+.dropzone {
   position: absolute;
   transform: translate(-50%, -50%);
-  width: 33px;
-  height: 33px;
+  width: 39px;
+  height: 39px;
   border: 2px solid white;
   border-radius: 50%;
   background: var(--blue);
   color: white;
+  box-shadow: 0 2px 6px #0003;
   font-size: 15px;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 1px 6px #3338;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1.1;
   z-index: 2;
+  touch-action: manipulation;
 }
 
-.marker:hover, .marker:focus {
-  background: #e8a52c;
-  color: #172033;
-  outline: 2px solid var(--navy);
+.dropzone.over {
+  outline: 4px solid #f1bb42;
+  background: #9a6810;
 }
 
-.marker.correct { background: var(--green); }
-.marker.incorrect { background: var(--red); }
+.dropzone.correct { background: var(--green); }
+.dropzone.wrong { background: var(--red); }
+
+.dropzone .placed-label {
+  position: absolute;
+  top: 34px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  color: var(--navy);
+  border: 1px solid #aabbd0;
+  border-radius: 5px;
+  padding: 5px 7px;
+  font-size: 12px;
+  font-weight: bold;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px #0002;
+  line-height: 1.2;
+}
 
 .map-note {
+  color: #647184;
   font-size: 12px;
   line-height: 1.5;
-  color: #596678;
-  margin-bottom: 0;
 }
 
-.question {
-  padding: 13px 0;
-  border-bottom: 1px solid var(--border);
+.word-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 14px 0;
 }
 
-.question:last-child { border-bottom: 0; }
-
-.question label {
-  display: block;
+.word {
+  background: #e8f0fc;
+  color: #17365d;
+  border: 2px solid #9ab8df;
+  padding: 11px 14px;
+  border-radius: 9px;
+  font-size: 15px;
   font-weight: bold;
-  margin-bottom: 8px;
+  cursor: grab;
+  user-select: none;
+  touch-action: manipulation;
 }
 
-select, textarea {
-  width: 100%;
-  padding: 11px;
-  border: 1px solid #bac7d6;
-  border-radius: 8px;
-  background: white;
-  font: inherit;
+.word:active { cursor: grabbing; }
+
+.word.selected {
+  background: #ffedb7;
+  border-color: #c58a12;
+  outline: 2px solid #e3b548;
 }
 
-select:focus, textarea:focus {
-  outline: 2px solid #7da9dc;
-  border-color: var(--blue);
+.word.used {
+  opacity: .4;
+  text-decoration: line-through;
 }
 
-.feedback {
-  font-size: 14px;
-  margin-top: 6px;
-  min-height: 17px;
+.word:focus-visible, .dropzone:focus-visible {
+  outline: 3px solid #e3a82b;
+  outline-offset: 2px;
+}
+
+.instructions {
+  line-height: 1.6;
 }
 
 button.action {
-  padding: 11px 14px;
+  padding: 11px 15px;
   border: 0;
   border-radius: 8px;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
   background: var(--blue);
   color: white;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 button.action:hover { filter: brightness(.92); }
@@ -168,29 +193,39 @@ button.green { background: var(--green); }
   display: flex;
   flex-wrap: wrap;
   gap: 9px;
-  margin-top: 18px;
+  margin-top: 15px;
 }
 
-#result {
+#feedback, #reflectionFeedback {
   margin-top: 15px;
-  padding: 14px;
+  padding: 13px;
+  background: #eef3fa;
   border-radius: 9px;
-  background: #edf3fa;
   line-height: 1.6;
 }
 
-.hidden { display: none; }
+[hidden] { display: none !important; }
+
+textarea {
+  width: 100%;
+  border: 1px solid #bac7d6;
+  border-radius: 8px;
+  padding: 12px;
+  font: inherit;
+}
 
 footer {
   text-align: center;
+  color: #647184;
+  padding: 10px 15px 25px;
   font-size: 12px;
-  color: #596678;
-  padding: 12px 16px 25px;
 }
 
-@media (max-width: 760px) {
-  .workspace { grid-template-columns: 1fr; }
+@media(max-width: 780px) {
+  .layout { grid-template-columns: 1fr; }
   header h1 { font-size: 23px; }
+  .dropzone { width: 34px; height: 34px; font-size: 13px; }
+  .dropzone .placed-label { font-size: 11px; }
 }
 </style>
 </head>
@@ -199,80 +234,109 @@ footer {
 
 <header>
   <h1>THE REVOLT OF 1857</h1>
-  <p>Interactive Map Labelling Challenge | Grade 5 Social Studies</p>
+  <p>Interactive Drag-and-Drop Map Challenge | Grade 5</p>
 </header>
 
-<main class="container">
+<main>
 
-  <section class="instructions">
+  <section class="panel instructions">
     <h2>Your Mission</h2>
     <p>
-      Study the political map of India. Identify the six numbered
-      locations associated with the Revolt of 1857. Select the correct
-      place for each number and check your answers.
+      Label the major centres of the Revolt of 1857 on the political
+      map of India. Drag each place name from the word bank onto its
+      numbered circle.
     </p>
-    <p><strong>Learning Objective:</strong> Locate and label the major
-      centres of the Revolt of 1857 on a political map of India.</p>
+    <p>
+      <strong>On a touchscreen?</strong> Tap a place name, then tap its
+      numbered circle. You can move a label to another circle if needed.
+    </p>
   </section>
 
-  <div class="workspace">
+  <div class="layout">
 
-    <section class="map-card">
+    <section class="map-area">
       <h2>Political Map of India</h2>
 
       <div class="map-wrap" id="mapWrap">
 
-        <!-- Blank political map with state boundaries -->
         <img
           id="indiaMap"
           src="https://commons.wikimedia.org/wiki/Special:FilePath/India_map_blank.svg"
-          alt="Blank political map of India with internal boundaries"
-          onerror="this.alt='Map could not load. Check your internet connection.'"
+          alt="Blank political map of India with state boundaries"
         >
 
-        <!-- Numbered markers; approximate positions on the map -->
-        <button class="marker" data-id="1"
-          style="left:44%;top:25%"
-          aria-label="Location 1">1</button>
+        <!-- Numbered drop targets: positions may need adjustment
+             to match the exact map image that loads. -->
 
-        <button class="marker" data-id="2"
-          style="left:42%;top:28%"
-          aria-label="Location 2">2</button>
+        <button class="dropzone" data-id="1"
+          style="left:44%;top:25%" aria-label="Drop location 1">
+          <span class="number">1</span>
+        </button>
 
-        <button class="marker" data-id="3"
-          style="left:54%;top:34%"
-          aria-label="Location 3">3</button>
+        <button class="dropzone" data-id="2"
+          style="left:42%;top:28%" aria-label="Drop location 2">
+          <span class="number">2</span>
+        </button>
 
-        <button class="marker" data-id="4"
-          style="left:51%;top:37%"
-          aria-label="Location 4">4</button>
+        <button class="dropzone" data-id="3"
+          style="left:54%;top:34%" aria-label="Drop location 3">
+          <span class="number">3</span>
+        </button>
 
-        <button class="marker" data-id="5"
-          style="left:44%;top:42%"
-          aria-label="Location 5">5</button>
+        <button class="dropzone" data-id="4"
+          style="left:51%;top:37%" aria-label="Drop location 4">
+          <span class="number">4</span>
+        </button>
 
-        <button class="marker" data-id="6"
-          style="left:69%;top:34%"
-          aria-label="Location 6">6</button>
+        <button class="dropzone" data-id="5"
+          style="left:44%;top:42%" aria-label="Drop location 5">
+          <span class="number">5</span>
+        </button>
+
+        <button class="dropzone" data-id="6"
+          style="left:69%;top:34%" aria-label="Drop location 6">
+          <span class="number">6</span>
+        </button>
+
       </div>
 
       <p class="map-note">
-        Click a numbered marker to go to its answer field.
-        Markers are approximate and should be repositioned if needed
-        to match the map image displayed.
-      </p>
-      <p class="map-note">
-        Map source: Wikimedia Commons,
+        Map: Wikimedia Commons.
         <a href="https://commons.wikimedia.org/wiki/File:India_map_blank.svg"
-           target="_blank" rel="noopener">India map blank.svg</a>.
+           target="_blank" rel="noopener">View map source</a>.
+        Check the numbered positions against the map before classroom use.
       </p>
     </section>
 
     <section class="panel">
-      <h2>Label the Locations</h2>
-      <p>Choose one answer for each numbered location.</p>
+      <h2>Word Bank</h2>
+      <p>Drag each label onto the correct circle.</p>
 
-      <div id="questions"></div>
+      <div class="word-bank" id="wordBank">
+
+        <div class="word" draggable="true" tabindex="0"
+          role="button" data-name="Meerut">Meerut</div>
+
+        <div class="word" draggable="true" tabindex="0"
+          role="button" data-name="Delhi">Delhi</div>
+
+        <div class="word" draggable="true" tabindex="0"
+          role="button" data-name="Lucknow">Lucknow</div>
+
+        <div class="word" draggable="true" tabindex="0"
+          role="button" data-name="Kanpur">Kanpur</div>
+
+        <div class="word" draggable="true" tabindex="0"
+          role="button" data-name="Jhansi">Jhansi</div>
+
+        <div class="word" draggable="true" tabindex="0"
+          role="button" data-name="Barrackpore">Barrackpore</div>
+
+      </div>
+
+      <p id="selectionHelp" aria-live="polite">
+        No label selected.
+      </p>
 
       <div class="buttons">
         <button class="action" id="checkBtn">Check Answers</button>
@@ -280,212 +344,276 @@ footer {
         <button class="action secondary" id="resetBtn">Try Again</button>
       </div>
 
-      <div id="result" class="hidden" aria-live="polite"></div>
+      <div id="feedback" hidden aria-live="polite"></div>
     </section>
 
   </div>
 
   <section class="panel">
     <h2>Think Like a Historian</h2>
-    <label for="reflection">
+    <p>
       Why did the Revolt of 1857 spread to different centres across India?
-    </label>
+    </p>
+
     <textarea id="reflection" rows="4"
-      placeholder="Write your explanation here..."></textarea>
+      placeholder="Write your answer here..."></textarea>
+
     <div class="buttons">
-      <button class="action green" id="copyBtn">Copy My Reflection</button>
+      <button class="action green" id="copyBtn">Copy Reflection</button>
     </div>
-    <p id="copyFeedback" aria-live="polite"></p>
+
+    <p id="reflectionFeedback" hidden aria-live="polite"></p>
   </section>
 
 </main>
 
-<footer>
-  Learn • Locate • Label • Reflect
-</footer>
+<footer>Learn • Locate • Label • Reflect</footer>
 
 <script>
 "use strict";
 
-// Answer key: number and corresponding historical centre.
-const places = [
-  { id: 1, name: "Meerut" },
-  { id: 2, name: "Delhi" },
-  { id: 3, name: "Lucknow" },
-  { id: 4, name: "Kanpur" },
-  { id: 5, name: "Jhansi" },
-  { id: 6, name: "Barrackpore" }
-];
+const answerKey = {
+  1: "Meerut",
+  2: "Delhi",
+  3: "Lucknow",
+  4: "Kanpur",
+  5: "Jhansi",
+  6: "Barrackpore"
+};
 
-const options = [
-  "Select a location",
-  "Barrackpore",
-  "Delhi",
-  "Jhansi",
-  "Kanpur",
-  "Lucknow",
-  "Meerut"
-];
+const placements = {};
+let selectedWord = null;
 
-const questions = document.getElementById("questions");
-const result = document.getElementById("result");
-const markers = document.querySelectorAll(".marker");
+const words = [...document.querySelectorAll(".word")];
+const zones = [...document.querySelectorAll(".dropzone")];
+const selectionHelp = document.getElementById("selectionHelp");
+const feedback = document.getElementById("feedback");
 
-// Build the answer fields.
-places.forEach(place => {
-  const div = document.createElement("div");
-  div.className = "question";
-  div.id = "question-" + place.id;
-
-  const label = document.createElement("label");
-  label.htmlFor = "answer-" + place.id;
-  label.textContent = "Location " + place.id;
-
-  const select = document.createElement("select");
-  select.id = "answer-" + place.id;
-
-  options.forEach(optionText => {
-    const option = document.createElement("option");
-    option.value = optionText === "Select a location" ? "" : optionText;
-    option.textContent = optionText;
-    select.appendChild(option);
+// Select or drag a word from the word bank.
+words.forEach(word => {
+  word.addEventListener("dragstart", event => {
+    selectedWord = word.dataset.name;
+    event.dataTransfer.setData("text/plain", selectedWord);
+    event.dataTransfer.effectAllowed = "move";
+    selectWord(word);
   });
 
-  const feedback = document.createElement("div");
-  feedback.className = "feedback";
-  feedback.id = "feedback-" + place.id;
-  feedback.setAttribute("aria-live", "polite");
+  word.addEventListener("click", () => {
+    selectedWord = word.dataset.name;
+    selectWord(word);
+  });
 
-  div.append(label, select, feedback);
-  questions.appendChild(div);
-
-  // Changing an answer clears its previous feedback.
-  select.addEventListener("change", () => {
-    feedback.textContent = "";
-    markers.forEach(marker => {
-      if (Number(marker.dataset.id) === place.id) {
-        marker.classList.remove("correct", "incorrect");
-      }
-    });
-    result.classList.add("hidden");
+  word.addEventListener("keydown", event => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      selectedWord = word.dataset.name;
+      selectWord(word);
+    }
   });
 });
 
-// Clicking a map marker moves the student to its answer field.
-markers.forEach(marker => {
-  marker.addEventListener("click", () => {
-    const select = document.getElementById(
-      "answer-" + marker.dataset.id
-    );
-    select.focus();
-    select.scrollIntoView({ behavior: "smooth", block: "center" });
+function selectWord(word) {
+  words.forEach(w => w.classList.remove("selected"));
+  word.classList.add("selected");
+  selectionHelp.textContent =
+    word.dataset.name + " selected. Tap a numbered circle to place it.";
+}
+
+// Set or move a label onto a map target.
+function placeWord(id, name) {
+  if (!name) return;
+
+  // Remove this word from any previous location.
+  Object.keys(placements).forEach(key => {
+    if (placements[key] === name) delete placements[key];
+  });
+
+  placements[id] = name;
+  selectedWord = null;
+
+  words.forEach(word => {
+    word.classList.remove("selected");
+    word.classList.toggle("used",
+      Object.values(placements).includes(word.dataset.name));
+  });
+
+  zones.forEach(zone => {
+    zone.classList.remove("correct", "wrong");
+    const oldLabel = zone.querySelector(".placed-label");
+    if (oldLabel) oldLabel.remove();
+
+    const zoneId = zone.dataset.id;
+    const number = zone.querySelector(".number");
+
+    number.textContent = zoneId;
+
+    if (placements[zoneId]) {
+      const label = document.createElement("span");
+      label.className = "placed-label";
+      label.textContent = placements[zoneId];
+      zone.appendChild(label);
+    }
+  });
+
+  selectionHelp.textContent = "Label placed. Continue with the next location.";
+  feedback.hidden = true;
+}
+
+// Enable native drag-and-drop.
+zones.forEach(zone => {
+  zone.addEventListener("dragover", event => {
+    event.preventDefault();
+    zone.classList.add("over");
+    event.dataTransfer.dropEffect = "move";
+  });
+
+  zone.addEventListener("dragleave", () => {
+    zone.classList.remove("over");
+  });
+
+  zone.addEventListener("drop", event => {
+    event.preventDefault();
+    zone.classList.remove("over");
+
+    const name = event.dataTransfer.getData("text/plain") || selectedWord;
+    if (name && Object.values(answerKey).includes(name)) {
+      placeWord(zone.dataset.id, name);
+    }
+  });
+
+  // Also supports tapping/clicking a numbered circle.
+  zone.addEventListener("click", () => {
+    if (selectedWord) {
+      placeWord(zone.dataset.id, selectedWord);
+    } else if (placements[zone.dataset.id]) {
+      // Tap an already placed label's circle to remove it.
+      delete placements[zone.dataset.id];
+      refreshMap();
+      selectionHelp.textContent =
+        "Label removed. Select a word and place it again.";
+    } else {
+      selectionHelp.textContent =
+        "Select a word from the word bank first.";
+    }
   });
 });
 
-// Check answers and calculate the score.
+function refreshMap() {
+  words.forEach(word => {
+    word.classList.remove("selected");
+    word.classList.toggle("used",
+      Object.values(placements).includes(word.dataset.name));
+  });
+
+  zones.forEach(zone => {
+    zone.classList.remove("correct", "wrong", "over");
+
+    const oldLabel = zone.querySelector(".placed-label");
+    if (oldLabel) oldLabel.remove();
+
+    const id = zone.dataset.id;
+    zone.querySelector(".number").textContent = id;
+
+    if (placements[id]) {
+      const label = document.createElement("span");
+      label.className = "placed-label";
+      label.textContent = placements[id];
+      zone.appendChild(label);
+    }
+  });
+
+  feedback.hidden = true;
+}
+
+// Check the student's answers.
 document.getElementById("checkBtn").addEventListener("click", () => {
   let score = 0;
   let unanswered = 0;
 
-  places.forEach(place => {
-    const select = document.getElementById("answer-" + place.id);
-    const feedback = document.getElementById("feedback-" + place.id);
-    const marker = document.querySelector(
-      '.marker[data-id="' + place.id + '"]'
-    );
+  zones.forEach(zone => {
+    const id = zone.dataset.id;
+    zone.classList.remove("correct", "wrong");
 
-    marker.classList.remove("correct", "incorrect");
-
-    if (!select.value) {
+    if (!placements[id]) {
       unanswered++;
-      feedback.textContent = "Please choose a location.";
-      feedback.style.color = "#9b6500";
       return;
     }
 
-    if (select.value === place.name) {
+    if (placements[id] === answerKey[id]) {
       score++;
-      feedback.textContent = "Correct!";
-      feedback.style.color = "#168454";
-      marker.classList.add("correct");
+      zone.classList.add("correct");
     } else {
-      feedback.textContent = "Not quite. Try again.";
-      feedback.style.color = "#c53e3e";
-      marker.classList.add("incorrect");
+      zone.classList.add("wrong");
     }
   });
 
-  result.classList.remove("hidden");
+  feedback.hidden = false;
 
-  let message = "<strong>Your Score: " + score +
-    " / " + places.length + "</strong><br>";
+  let message = "<strong>Your score: " + score + " / 6</strong><br>";
 
-  if (score === places.length) {
-    message += "Excellent! You identified all six centres correctly.";
+  if (score === 6) {
+    message += "Excellent! All centres are labelled correctly.";
   } else {
-    message += "Review the locations and try again.";
+    message += "Green circles are correct; red circles need reviewing.";
   }
 
   if (unanswered > 0) {
-    message += "<br>Unanswered: " + unanswered;
+    message += "<br>Locations still to label: " + unanswered;
   }
 
-  result.innerHTML = message;
+  feedback.innerHTML = message;
 });
 
-// Reveal the answer key.
+// Reveal the complete answer key.
 document.getElementById("showBtn").addEventListener("click", () => {
-  places.forEach(place => {
-    document.getElementById("answer-" + place.id).value = place.name;
-    document.getElementById("feedback-" + place.id).textContent =
-      "Answer: " + place.name;
-    document.getElementById("feedback-" + place.id).style.color =
-      "#168454";
+  Object.keys(answerKey).forEach(id => {
+    placements[id] = answerKey[id];
   });
 
-  markers.forEach(marker => {
-    marker.classList.remove("incorrect");
-    marker.classList.add("correct");
-  });
+  refreshMap();
 
-  result.classList.remove("hidden");
-  result.innerHTML =
-    "<strong>Answer key displayed.</strong><br>" +
-    "Meerut, Delhi, Lucknow, Kanpur, Jhansi and Barrackpore.";
+  zones.forEach(zone => zone.classList.add("correct"));
+
+  feedback.hidden = false;
+  feedback.innerHTML =
+    "<strong>Answer key</strong><br>" +
+    "1. Meerut<br>" +
+    "2. Delhi<br>" +
+    "3. Lucknow<br>" +
+    "4. Kanpur<br>" +
+    "5. Jhansi<br>" +
+    "6. Barrackpore";
 });
 
-// Reset the activity.
+// Clear all labels and start again.
 document.getElementById("resetBtn").addEventListener("click", () => {
-  places.forEach(place => {
-    document.getElementById("answer-" + place.id).value = "";
-    document.getElementById("feedback-" + place.id).textContent = "";
-  });
-
-  markers.forEach(marker => {
-    marker.classList.remove("correct", "incorrect");
-  });
-
-  result.classList.add("hidden");
+  Object.keys(placements).forEach(key => delete placements[key]);
+  selectedWord = null;
+  refreshMap();
+  selectionHelp.textContent = "No label selected.";
+  feedback.hidden = true;
   document.getElementById("reflection").value = "";
-  document.getElementById("copyFeedback").textContent = "";
+  document.getElementById("reflectionFeedback").hidden = true;
 });
 
-// Copy the student's written reflection.
+// Copy the student's reflection.
 document.getElementById("copyBtn").addEventListener("click", async () => {
-  const text = document.getElementById("reflection").value.trim();
-  const feedback = document.getElementById("copyFeedback");
+  const reflection = document.getElementById("reflection").value.trim();
+  const message = document.getElementById("reflectionFeedback");
 
-  if (!text) {
-    feedback.textContent = "Write your reflection first.";
+  message.hidden = false;
+
+  if (!reflection) {
+    message.textContent = "Write your reflection before copying.";
     return;
   }
 
   try {
-    await navigator.clipboard.writeText(text);
-    feedback.textContent = "Reflection copied successfully.";
+    await navigator.clipboard.writeText(reflection);
+    message.textContent = "Reflection copied successfully.";
   } catch (error) {
-    feedback.textContent =
-      "Clipboard access is unavailable. Select and copy your text manually.";
+    message.textContent =
+      "Clipboard unavailable. Please select and copy your response manually.";
   }
 });
 </script>
