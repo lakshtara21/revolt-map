@@ -3,136 +3,63 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Revolt of 1857 | Drag and Drop Map Challenge</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revolt of 1857 - Map Challenge</title>
 <style>
-:root {
-  --navy: #17365d;
-  --blue: #2864a5;
-  --green: #168454;
-  --red: #c53e3e;
-  --bg: #f3f6fb;
-  --border: #d8e1ec;
-}
-
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  color: #202c3b;
-  background: var(--bg);
+  background: #f2f5fa;
+  color: #243247;
 }
 
 header {
-  background: var(--navy);
+  background: #18365c;
   color: white;
+  padding: 22px 12px;
   text-align: center;
-  padding: 23px 15px;
 }
 
-header h1 { margin: 0 0 8px; font-size: 28px; }
-header p { margin: 0; line-height: 1.5; }
+header h1 { margin: 0 0 8px; }
+header p { margin: 0; }
 
 main {
-  max-width: 1200px;
-  margin: 22px auto;
-  padding: 0 15px;
+  max-width: 1100px;
+  margin: 20px auto;
+  padding: 0 14px;
 }
 
-.panel {
+.card {
   background: white;
   padding: 18px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  margin-bottom: 18px;
+  border-radius: 12px;
+  border: 1px solid #d9e2ee;
+  margin-bottom: 16px;
 }
 
-h2 { color: var(--navy); margin-top: 0; }
+h2 { color: #18365c; margin-top: 0; }
 
 .layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(290px, .8fr);
-  gap: 18px;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, .9fr);
+  gap: 16px;
   align-items: start;
 }
 
-.map-area {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 16px;
-  min-width: 0;
-}
+.mapbox { min-width: 0; }
 
-.map-wrap {
-  position: relative;
-  width: 100%;
-  max-width: 650px;
-  margin: auto;
-  line-height: 0;
-}
-
-.map-wrap img {
+svg {
+  display: block;
   width: 100%;
   height: auto;
-  display: block;
+  background: #fafdff;
+  border: 1px solid #d9e2ee;
+  border-radius: 8px;
 }
 
-.dropzone {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  width: 39px;
-  height: 39px;
-  border: 2px solid white;
-  border-radius: 50%;
-  background: var(--blue);
-  color: white;
-  box-shadow: 0 2px 6px #0003;
-  font-size: 15px;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  line-height: 1.1;
-  z-index: 2;
-  touch-action: manipulation;
-}
-
-.dropzone.over {
-  outline: 4px solid #f1bb42;
-  background: #9a6810;
-}
-
-.dropzone.correct { background: var(--green); }
-.dropzone.wrong { background: var(--red); }
-
-.dropzone .placed-label {
-  position: absolute;
-  top: 34px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: white;
-  color: var(--navy);
-  border: 1px solid #aabbd0;
-  border-radius: 5px;
-  padding: 5px 7px;
-  font-size: 12px;
-  font-weight: bold;
-  white-space: nowrap;
-  box-shadow: 0 2px 4px #0002;
-  line-height: 1.2;
-}
-
-.map-note {
-  color: #647184;
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-.word-bank {
+.wordbank {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -140,239 +67,265 @@ h2 { color: var(--navy); margin-top: 0; }
 }
 
 .word {
-  background: #e8f0fc;
-  color: #17365d;
-  border: 2px solid #9ab8df;
-  padding: 11px 14px;
+  background: #e4efff;
+  color: #173b67;
+  border: 2px solid #7da5dc;
   border-radius: 9px;
-  font-size: 15px;
+  padding: 11px 13px;
   font-weight: bold;
   cursor: grab;
   user-select: none;
   touch-action: manipulation;
 }
 
-.word:active { cursor: grabbing; }
-
 .word.selected {
   background: #ffedb7;
-  border-color: #c58a12;
-  outline: 2px solid #e3b548;
+  border-color: #c28a12;
 }
 
 .word.used {
-  opacity: .4;
+  opacity: .45;
   text-decoration: line-through;
 }
 
-.word:focus-visible, .dropzone:focus-visible {
-  outline: 3px solid #e3a82b;
-  outline-offset: 2px;
+.target { cursor: pointer; }
+.target circle {
+  fill: #245e9e;
+  stroke: white;
+  stroke-width: 3;
 }
-
-.instructions {
-  line-height: 1.6;
-}
-
-button.action {
-  padding: 11px 15px;
-  border: 0;
-  border-radius: 8px;
-  background: var(--blue);
-  color: white;
+.target .number {
+  fill: white;
+  font-size: 15px;
   font-weight: bold;
-  font-size: 14px;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+.target .label {
+  fill: #15365e;
+  font-size: 12px;
+  font-weight: bold;
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: white;
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.target.correct circle { fill: #168454; }
+.target.incorrect circle { fill: #c53e3e; }
+.target.over circle { fill: #dc9b18; }
+
+button {
+  border: 0;
+  padding: 11px 14px;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  background: #245e9e;
+  color: white;
 }
 
-button.action:hover { filter: brightness(.92); }
-button.secondary { background: #e7edf5; color: var(--navy); }
-button.green { background: var(--green); }
+button.secondary {
+  background: #e7edf5;
+  color: #18365c;
+}
 
 .buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 9px;
-  margin-top: 15px;
+  margin-top: 16px;
 }
 
-#feedback, #reflectionFeedback {
-  margin-top: 15px;
-  padding: 13px;
-  background: #eef3fa;
-  border-radius: 9px;
+#result {
+  background: #eef4fc;
+  padding: 14px;
+  border-radius: 8px;
+  margin-top: 14px;
   line-height: 1.6;
 }
 
-[hidden] { display: none !important; }
-
 textarea {
   width: 100%;
-  border: 1px solid #bac7d6;
-  border-radius: 8px;
   padding: 12px;
+  border: 1px solid #b9c7d9;
+  border-radius: 8px;
   font: inherit;
 }
 
-footer {
-  text-align: center;
-  color: #647184;
-  padding: 10px 15px 25px;
+.small {
   font-size: 12px;
+  color: #5d6c80;
+  line-height: 1.5;
 }
 
-@media(max-width: 780px) {
+@media(max-width: 740px) {
   .layout { grid-template-columns: 1fr; }
-  header h1 { font-size: 23px; }
-  .dropzone { width: 34px; height: 34px; font-size: 13px; }
-  .dropzone .placed-label { font-size: 11px; }
 }
 </style>
 </head>
-
 <body>
 
 <header>
-  <h1>THE REVOLT OF 1857</h1>
-  <p>Interactive Drag-and-Drop Map Challenge | Grade 5</p>
+  <h1>The Revolt of 1857</h1>
+  <p>Grade 5 Social Studies | Interactive Map Labelling</p>
 </header>
 
 <main>
-
-  <section class="panel instructions">
+  <section class="card">
     <h2>Your Mission</h2>
-    <p>
-      Label the major centres of the Revolt of 1857 on the political
-      map of India. Drag each place name from the word bank onto its
-      numbered circle.
-    </p>
-    <p>
-      <strong>On a touchscreen?</strong> Tap a place name, then tap its
-      numbered circle. You can move a label to another circle if needed.
-    </p>
+    Drag each place name onto the correct numbered location.
+    You can also tap a name and then tap its numbered circle.
+    Click "Check Answers" when you finish.
   </section>
 
   <div class="layout">
+    <section class="card mapbox">
+      <h2>India Map</h2>
 
-    <section class="map-area">
-      <h2>Political Map of India</h2>
+      <svg id="india" viewBox="0 0 500 570"
+           role="img" aria-label="Schematic map of India with numbered targets">
 
-      <div class="map-wrap" id="mapWrap">
+        <defs>
+          <clipPath id="indiaClip">
+            <path id="outline"
+              d="M130 45
+                 L175 34 L220 43 L260 57 L291 76
+                 L324 91 L352 109 L375 110 L402 120
+                 L430 132 L414 146 L393 151 L382 171
+                 L367 188 L351 202 L339 225
+                 L326 252 L311 279 L302 309
+                 L286 339 L278 373 L263 409
+                 L246 448 L231 483 L217 516
+                 L204 489 L190 453 L176 420
+                 L160 390 L143 360 L126 333
+                 L107 304 L91 274 L77 245
+                 L68 217 L82 193 L99 172
+                 L107 145 L118 121 L119 92 Z"/>
+          </clipPath>
+        </defs>
 
-        <img
-          id="indiaMap"
-          src="https://commons.wikimedia.org/wiki/Special:FilePath/India_map_blank.svg"
-          alt="Blank political map of India with state boundaries"
-        >
+        <!-- Schematic outline and state-boundary illustration -->
+        <use href="#outline" fill="#f8f0dc" stroke="#526f5d"
+             stroke-width="3"/>
 
-        <!-- Numbered drop targets: positions may need adjustment
-             to match the exact map image that loads. -->
+        <g clip-path="url(#indiaClip)" fill="none"
+           stroke="#c3b79e" stroke-width="1.5">
+          <path d="M95 110 L170 125 L240 105 L315 125 L390 145"/>
+          <path d="M82 160 L145 166 L200 150 L267 163 L340 180 L400 170"/>
+          <path d="M75 210 L135 207 L188 190 L250 205 L320 215 L380 205"/>
+          <path d="M80 255 L145 246 L202 235 L260 250 L315 260 L355 245"/>
+          <path d="M100 300 L157 285 L210 290 L275 302 L325 285"/>
+          <path d="M120 340 L170 325 L220 343 L285 335"/>
+          <path d="M145 380 L190 365 L240 385 L275 370"/>
+          <path d="M165 420 L207 410 L253 420"/>
+          <path d="M118 120 L145 166 L135 207 L145 246 L157 285 L170 325"/>
+          <path d="M170 125 L200 150 L188 190 L202 235 L210 290"/>
+          <path d="M240 105 L267 163 L250 205 L260 250 L275 302 L285 335"/>
+          <path d="M315 125 L340 180 L320 215 L315 260 L325 285"/>
+          <path d="M190 453 L207 410 L190 365 L210 290"/>
+        </g>
 
-        <button class="dropzone" data-id="1"
-          style="left:44%;top:25%" aria-label="Drop location 1">
-          <span class="number">1</span>
-        </button>
+        <text x="250" y="548" text-anchor="middle"
+              font-size="11" fill="#66778b">
+          Schematic practice map — not to scale
+        </text>
 
-        <button class="dropzone" data-id="2"
-          style="left:42%;top:28%" aria-label="Drop location 2">
-          <span class="number">2</span>
-        </button>
+        <!-- Numbered drop targets -->
+        <g class="target" data-id="1" tabindex="0" role="button"
+           aria-label="Location 1" transform="translate(190 130)">
+          <circle r="17"/>
+          <text class="number" y="1">1</text>
+          <text class="label" y="-23"></text>
+        </g>
 
-        <button class="dropzone" data-id="3"
-          style="left:54%;top:34%" aria-label="Drop location 3">
-          <span class="number">3</span>
-        </button>
+        <g class="target" data-id="2" tabindex="0" role="button"
+           aria-label="Location 2" transform="translate(177 153)">
+          <circle r="17"/>
+          <text class="number" y="1">2</text>
+          <text class="label" y="-23"></text>
+        </g>
 
-        <button class="dropzone" data-id="4"
-          style="left:51%;top:37%" aria-label="Drop location 4">
-          <span class="number">4</span>
-        </button>
+        <g class="target" data-id="3" tabindex="0" role="button"
+           aria-label="Location 3" transform="translate(247 195)">
+          <circle r="17"/>
+          <text class="number" y="1">3</text>
+          <text class="label" y="-23"></text>
+        </g>
 
-        <button class="dropzone" data-id="5"
-          style="left:44%;top:42%" aria-label="Drop location 5">
-          <span class="number">5</span>
-        </button>
+        <g class="target" data-id="4" tabindex="0" role="button"
+           aria-label="Location 4" transform="translate(225 224)">
+          <circle r="17"/>
+          <text class="number" y="1">4</text>
+          <text class="label" y="-23"></text>
+        </g>
 
-        <button class="dropzone" data-id="6"
-          style="left:69%;top:34%" aria-label="Drop location 6">
-          <span class="number">6</span>
-        </button>
+        <g class="target" data-id="5" tabindex="0" role="button"
+           aria-label="Location 5" transform="translate(178 267)">
+          <circle r="17"/>
+          <text class="number" y="1">5</text>
+          <text class="label" y="-23"></text>
+        </g>
 
-      </div>
+        <g class="target" data-id="6" tabindex="0" role="button"
+           aria-label="Location 6" transform="translate(320 193)">
+          <circle r="17"/>
+          <text class="number" y="1">6</text>
+          <text class="label" y="-23"></text>
+        </g>
+      </svg>
 
-      <p class="map-note">
-        Map: Wikimedia Commons.
-        <a href="https://commons.wikimedia.org/wiki/File:India_map_blank.svg"
-           target="_blank" rel="noopener">View map source</a>.
-        Check the numbered positions against the map before classroom use.
+      <p class="small">
+        This built-in illustration is schematic. The borders are illustrative,
+        not an accurate representation of India's states. Use a verified
+        political map for formal geographical assessment.
       </p>
     </section>
 
-    <section class="panel">
+    <section class="card">
       <h2>Word Bank</h2>
-      <p>Drag each label onto the correct circle.</p>
+      <p>Drag a label to a numbered circle.</p>
 
-      <div class="word-bank" id="wordBank">
-
+      <div class="wordbank" id="wordbank">
         <div class="word" draggable="true" tabindex="0"
-          role="button" data-name="Meerut">Meerut</div>
-
+             data-name="Meerut">Meerut</div>
         <div class="word" draggable="true" tabindex="0"
-          role="button" data-name="Delhi">Delhi</div>
-
+             data-name="Delhi">Delhi</div>
         <div class="word" draggable="true" tabindex="0"
-          role="button" data-name="Lucknow">Lucknow</div>
-
+             data-name="Lucknow">Lucknow</div>
         <div class="word" draggable="true" tabindex="0"
-          role="button" data-name="Kanpur">Kanpur</div>
-
+             data-name="Kanpur">Kanpur</div>
         <div class="word" draggable="true" tabindex="0"
-          role="button" data-name="Jhansi">Jhansi</div>
-
+             data-name="Jhansi">Jhansi</div>
         <div class="word" draggable="true" tabindex="0"
-          role="button" data-name="Barrackpore">Barrackpore</div>
-
+             data-name="Barrackpore">Barrackpore</div>
       </div>
 
-      <p id="selectionHelp" aria-live="polite">
-        No label selected.
-      </p>
+      <p id="status" aria-live="polite">Choose a label to begin.</p>
 
       <div class="buttons">
-        <button class="action" id="checkBtn">Check Answers</button>
-        <button class="action secondary" id="showBtn">Show Answers</button>
-        <button class="action secondary" id="resetBtn">Try Again</button>
+        <button id="check">Check Answers</button>
+        <button class="secondary" id="show">Show Answers</button>
+        <button class="secondary" id="reset">Try Again</button>
       </div>
 
-      <div id="feedback" hidden aria-live="polite"></div>
+      <div id="result" hidden aria-live="polite"></div>
     </section>
-
   </div>
 
-  <section class="panel">
+  <section class="card">
     <h2>Think Like a Historian</h2>
-    <p>
-      Why did the Revolt of 1857 spread to different centres across India?
-    </p>
-
+    <p>Why did the Revolt of 1857 spread to different centres?</p>
     <textarea id="reflection" rows="4"
-      placeholder="Write your answer here..."></textarea>
-
-    <div class="buttons">
-      <button class="action green" id="copyBtn">Copy Reflection</button>
-    </div>
-
-    <p id="reflectionFeedback" hidden aria-live="polite"></p>
+              placeholder="Write your answer here..."></textarea>
   </section>
-
 </main>
 
-<footer>Learn • Locate • Label • Reflect</footer>
-
 <script>
-"use strict";
-
-const answerKey = {
+const answers = {
   1: "Meerut",
   2: "Delhi",
   3: "Lucknow",
@@ -381,242 +334,169 @@ const answerKey = {
   6: "Barrackpore"
 };
 
-const placements = {};
-let selectedWord = null;
+const placed = {};
+let selected = null;
 
 const words = [...document.querySelectorAll(".word")];
-const zones = [...document.querySelectorAll(".dropzone")];
-const selectionHelp = document.getElementById("selectionHelp");
-const feedback = document.getElementById("feedback");
+const targets = [...document.querySelectorAll(".target")];
+const status = document.getElementById("status");
+const result = document.getElementById("result");
 
-// Select or drag a word from the word bank.
+function refresh() {
+  words.forEach(word => {
+    const used = Object.values(placed).includes(word.dataset.name);
+    word.classList.toggle("used", used);
+    word.classList.toggle("selected", word.dataset.name === selected);
+  });
+
+  targets.forEach(target => {
+    const id = target.dataset.id;
+    const label = target.querySelector(".label");
+
+    target.classList.remove("correct", "incorrect", "over");
+    label.textContent = placed[id] || "";
+    target.setAttribute(
+      "aria-label",
+      "Location " + id + (placed[id] ? ": " + placed[id] : "")
+    );
+  });
+}
+
+function chooseWord(name) {
+  selected = name;
+  status.textContent = name +
+    " selected. Now tap a numbered circle to place it.";
+  refresh();
+}
+
+function placeLabel(id, name) {
+  if (!name) return;
+
+  // Remove the same label from any previous location.
+  Object.keys(placed).forEach(key => {
+    if (placed[key] === name) delete placed[key];
+  });
+
+  placed[id] = name;
+  selected = null;
+  result.hidden = true;
+  status.textContent = name + " placed at location " + id + ".";
+  refresh();
+}
+
+// Mouse drag and touchscreen/click selection.
 words.forEach(word => {
   word.addEventListener("dragstart", event => {
-    selectedWord = word.dataset.name;
-    event.dataTransfer.setData("text/plain", selectedWord);
+    selected = word.dataset.name;
+    event.dataTransfer.setData("text/plain", selected);
     event.dataTransfer.effectAllowed = "move";
-    selectWord(word);
+    refresh();
   });
 
   word.addEventListener("click", () => {
-    selectedWord = word.dataset.name;
-    selectWord(word);
+    chooseWord(word.dataset.name);
   });
 
   word.addEventListener("keydown", event => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      selectedWord = word.dataset.name;
-      selectWord(word);
+      chooseWord(word.dataset.name);
     }
   });
 });
 
-function selectWord(word) {
-  words.forEach(w => w.classList.remove("selected"));
-  word.classList.add("selected");
-  selectionHelp.textContent =
-    word.dataset.name + " selected. Tap a numbered circle to place it.";
-}
-
-// Set or move a label onto a map target.
-function placeWord(id, name) {
-  if (!name) return;
-
-  // Remove this word from any previous location.
-  Object.keys(placements).forEach(key => {
-    if (placements[key] === name) delete placements[key];
+targets.forEach(target => {
+  target.addEventListener("dragover", event => {
+    event.preventDefault();
+    target.classList.add("over");
   });
 
-  placements[id] = name;
-  selectedWord = null;
-
-  words.forEach(word => {
-    word.classList.remove("selected");
-    word.classList.toggle("used",
-      Object.values(placements).includes(word.dataset.name));
+  target.addEventListener("dragleave", () => {
+    target.classList.remove("over");
   });
 
-  zones.forEach(zone => {
-    zone.classList.remove("correct", "wrong");
-    const oldLabel = zone.querySelector(".placed-label");
-    if (oldLabel) oldLabel.remove();
+  target.addEventListener("drop", event => {
+    event.preventDefault();
+    target.classList.remove("over");
 
-    const zoneId = zone.dataset.id;
-    const number = zone.querySelector(".number");
-
-    number.textContent = zoneId;
-
-    if (placements[zoneId]) {
-      const label = document.createElement("span");
-      label.className = "placed-label";
-      label.textContent = placements[zoneId];
-      zone.appendChild(label);
+    const name = event.dataTransfer.getData("text/plain") || selected;
+    if (name && Object.values(answers).includes(name)) {
+      placeLabel(target.dataset.id, name);
     }
   });
 
-  selectionHelp.textContent = "Label placed. Continue with the next location.";
-  feedback.hidden = true;
-}
-
-// Enable native drag-and-drop.
-zones.forEach(zone => {
-  zone.addEventListener("dragover", event => {
-    event.preventDefault();
-    zone.classList.add("over");
-    event.dataTransfer.dropEffect = "move";
-  });
-
-  zone.addEventListener("dragleave", () => {
-    zone.classList.remove("over");
-  });
-
-  zone.addEventListener("drop", event => {
-    event.preventDefault();
-    zone.classList.remove("over");
-
-    const name = event.dataTransfer.getData("text/plain") || selectedWord;
-    if (name && Object.values(answerKey).includes(name)) {
-      placeWord(zone.dataset.id, name);
-    }
-  });
-
-  // Also supports tapping/clicking a numbered circle.
-  zone.addEventListener("click", () => {
-    if (selectedWord) {
-      placeWord(zone.dataset.id, selectedWord);
-    } else if (placements[zone.dataset.id]) {
-      // Tap an already placed label's circle to remove it.
-      delete placements[zone.dataset.id];
-      refreshMap();
-      selectionHelp.textContent =
-        "Label removed. Select a word and place it again.";
+  target.addEventListener("click", () => {
+    if (selected) {
+      placeLabel(target.dataset.id, selected);
+    } else if (placed[target.dataset.id]) {
+      delete placed[target.dataset.id];
+      refresh();
+      status.textContent = "Label removed. Select a word to place it again.";
     } else {
-      selectionHelp.textContent =
-        "Select a word from the word bank first.";
+      status.textContent = "First select a name from the word bank.";
+    }
+  });
+
+  target.addEventListener("keydown", event => {
+    if ((event.key === "Enter" || event.key === " ") && selected) {
+      event.preventDefault();
+      placeLabel(target.dataset.id, selected);
     }
   });
 });
 
-function refreshMap() {
-  words.forEach(word => {
-    word.classList.remove("selected");
-    word.classList.toggle("used",
-      Object.values(placements).includes(word.dataset.name));
-  });
-
-  zones.forEach(zone => {
-    zone.classList.remove("correct", "wrong", "over");
-
-    const oldLabel = zone.querySelector(".placed-label");
-    if (oldLabel) oldLabel.remove();
-
-    const id = zone.dataset.id;
-    zone.querySelector(".number").textContent = id;
-
-    if (placements[id]) {
-      const label = document.createElement("span");
-      label.className = "placed-label";
-      label.textContent = placements[id];
-      zone.appendChild(label);
-    }
-  });
-
-  feedback.hidden = true;
-}
-
-// Check the student's answers.
-document.getElementById("checkBtn").addEventListener("click", () => {
+// Check the six locations.
+document.getElementById("check").addEventListener("click", () => {
   let score = 0;
-  let unanswered = 0;
+  let missing = 0;
 
-  zones.forEach(zone => {
-    const id = zone.dataset.id;
-    zone.classList.remove("correct", "wrong");
+  targets.forEach(target => {
+    const id = target.dataset.id;
+    target.classList.remove("correct", "incorrect");
 
-    if (!placements[id]) {
-      unanswered++;
-      return;
-    }
-
-    if (placements[id] === answerKey[id]) {
+    if (!placed[id]) {
+      missing++;
+    } else if (placed[id] === answers[id]) {
       score++;
-      zone.classList.add("correct");
+      target.classList.add("correct");
     } else {
-      zone.classList.add("wrong");
+      target.classList.add("incorrect");
     }
   });
 
-  feedback.hidden = false;
-
-  let message = "<strong>Your score: " + score + " / 6</strong><br>";
-
-  if (score === 6) {
-    message += "Excellent! All centres are labelled correctly.";
-  } else {
-    message += "Green circles are correct; red circles need reviewing.";
-  }
-
-  if (unanswered > 0) {
-    message += "<br>Locations still to label: " + unanswered;
-  }
-
-  feedback.innerHTML = message;
+  result.hidden = false;
+  result.innerHTML = "<strong>Your score: " + score + " / 6</strong><br>" +
+    (score === 6
+      ? "Excellent! All six answers are correct."
+      : "Green = correct. Red = incorrect. Review and try again.") +
+    (missing ? "<br>Locations still to label: " + missing : "");
 });
 
-// Reveal the complete answer key.
-document.getElementById("showBtn").addEventListener("click", () => {
-  Object.keys(answerKey).forEach(id => {
-    placements[id] = answerKey[id];
-  });
+// Show the complete answer key.
+document.getElementById("show").addEventListener("click", () => {
+  Object.keys(answers).forEach(id => placed[id] = answers[id]);
+  selected = null;
+  refresh();
+  targets.forEach(target => target.classList.add("correct"));
 
-  refreshMap();
-
-  zones.forEach(zone => zone.classList.add("correct"));
-
-  feedback.hidden = false;
-  feedback.innerHTML =
-    "<strong>Answer key</strong><br>" +
-    "1. Meerut<br>" +
-    "2. Delhi<br>" +
-    "3. Lucknow<br>" +
-    "4. Kanpur<br>" +
-    "5. Jhansi<br>" +
-    "6. Barrackpore";
+  result.hidden = false;
+  result.innerHTML =
+    "<strong>Answer Key</strong><br>" +
+    "1. Meerut<br>2. Delhi<br>3. Lucknow<br>" +
+    "4. Kanpur<br>5. Jhansi<br>6. Barrackpore";
+  status.textContent = "Answer key displayed.";
 });
 
-// Clear all labels and start again.
-document.getElementById("resetBtn").addEventListener("click", () => {
-  Object.keys(placements).forEach(key => delete placements[key]);
-  selectedWord = null;
-  refreshMap();
-  selectionHelp.textContent = "No label selected.";
-  feedback.hidden = true;
-  document.getElementById("reflection").value = "";
-  document.getElementById("reflectionFeedback").hidden = true;
+// Reset for another attempt.
+document.getElementById("reset").addEventListener("click", () => {
+  Object.keys(placed).forEach(id => delete placed[id]);
+  selected = null;
+  refresh();
+  result.hidden = true;
+  status.textContent = "Choose a label to begin.";
 });
 
-// Copy the student's reflection.
-document.getElementById("copyBtn").addEventListener("click", async () => {
-  const reflection = document.getElementById("reflection").value.trim();
-  const message = document.getElementById("reflectionFeedback");
-
-  message.hidden = false;
-
-  if (!reflection) {
-    message.textContent = "Write your reflection before copying.";
-    return;
-  }
-
-  try {
-    await navigator.clipboard.writeText(reflection);
-    message.textContent = "Reflection copied successfully.";
-  } catch (error) {
-    message.textContent =
-      "Clipboard unavailable. Please select and copy your response manually.";
-  }
-});
+refresh();
 </script>
-
 </body>
 </html>
