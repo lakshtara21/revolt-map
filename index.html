@@ -1,0 +1,494 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revolt of 1857 - Interactive Map Activity</title>
+
+<style>
+:root {
+  --navy: #17365d;
+  --blue: #2864a5;
+  --green: #168454;
+  --red: #c53e3e;
+  --cream: #f7f8fb;
+  --border: #dce3ec;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--cream);
+  color: #202c3b;
+}
+
+header {
+  background: var(--navy);
+  color: white;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+header h1 { margin: 0 0 8px; font-size: 28px; }
+header p { margin: 0; line-height: 1.5; }
+
+.container {
+  max-width: 1150px;
+  margin: 22px auto;
+  padding: 0 16px;
+}
+
+.instructions, .panel {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+.instructions h2, .panel h2 {
+  color: var(--navy);
+  margin-top: 0;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.map-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.map-card h2 { margin-top: 0; color: var(--navy); }
+
+.map-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  background: white;
+}
+
+.map-wrap img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.marker {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 33px;
+  height: 33px;
+  border: 2px solid white;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 1px 6px #3338;
+  z-index: 2;
+}
+
+.marker:hover, .marker:focus {
+  background: #e8a52c;
+  color: #172033;
+  outline: 2px solid var(--navy);
+}
+
+.marker.correct { background: var(--green); }
+.marker.incorrect { background: var(--red); }
+
+.map-note {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #596678;
+  margin-bottom: 0;
+}
+
+.question {
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.question:last-child { border-bottom: 0; }
+
+.question label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+select, textarea {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #bac7d6;
+  border-radius: 8px;
+  background: white;
+  font: inherit;
+}
+
+select:focus, textarea:focus {
+  outline: 2px solid #7da9dc;
+  border-color: var(--blue);
+}
+
+.feedback {
+  font-size: 14px;
+  margin-top: 6px;
+  min-height: 17px;
+}
+
+button.action {
+  padding: 11px 14px;
+  border: 0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  background: var(--blue);
+  color: white;
+}
+
+button.action:hover { filter: brightness(.92); }
+button.secondary { background: #e7edf5; color: var(--navy); }
+button.green { background: var(--green); }
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 18px;
+}
+
+#result {
+  margin-top: 15px;
+  padding: 14px;
+  border-radius: 9px;
+  background: #edf3fa;
+  line-height: 1.6;
+}
+
+.hidden { display: none; }
+
+footer {
+  text-align: center;
+  font-size: 12px;
+  color: #596678;
+  padding: 12px 16px 25px;
+}
+
+@media (max-width: 760px) {
+  .workspace { grid-template-columns: 1fr; }
+  header h1 { font-size: 23px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>THE REVOLT OF 1857</h1>
+  <p>Interactive Map Labelling Challenge | Grade 5 Social Studies</p>
+</header>
+
+<main class="container">
+
+  <section class="instructions">
+    <h2>Your Mission</h2>
+    <p>
+      Study the political map of India. Identify the six numbered
+      locations associated with the Revolt of 1857. Select the correct
+      place for each number and check your answers.
+    </p>
+    <p><strong>Learning Objective:</strong> Locate and label the major
+      centres of the Revolt of 1857 on a political map of India.</p>
+  </section>
+
+  <div class="workspace">
+
+    <section class="map-card">
+      <h2>Political Map of India</h2>
+
+      <div class="map-wrap" id="mapWrap">
+
+        <!-- Blank political map with state boundaries -->
+        <img
+          id="indiaMap"
+          src="https://commons.wikimedia.org/wiki/Special:FilePath/India_map_blank.svg"
+          alt="Blank political map of India with internal boundaries"
+          onerror="this.alt='Map could not load. Check your internet connection.'"
+        >
+
+        <!-- Numbered markers; approximate positions on the map -->
+        <button class="marker" data-id="1"
+          style="left:44%;top:25%"
+          aria-label="Location 1">1</button>
+
+        <button class="marker" data-id="2"
+          style="left:42%;top:28%"
+          aria-label="Location 2">2</button>
+
+        <button class="marker" data-id="3"
+          style="left:54%;top:34%"
+          aria-label="Location 3">3</button>
+
+        <button class="marker" data-id="4"
+          style="left:51%;top:37%"
+          aria-label="Location 4">4</button>
+
+        <button class="marker" data-id="5"
+          style="left:44%;top:42%"
+          aria-label="Location 5">5</button>
+
+        <button class="marker" data-id="6"
+          style="left:69%;top:34%"
+          aria-label="Location 6">6</button>
+      </div>
+
+      <p class="map-note">
+        Click a numbered marker to go to its answer field.
+        Markers are approximate and should be repositioned if needed
+        to match the map image displayed.
+      </p>
+      <p class="map-note">
+        Map source: Wikimedia Commons,
+        <a href="https://commons.wikimedia.org/wiki/File:India_map_blank.svg"
+           target="_blank" rel="noopener">India map blank.svg</a>.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>Label the Locations</h2>
+      <p>Choose one answer for each numbered location.</p>
+
+      <div id="questions"></div>
+
+      <div class="buttons">
+        <button class="action" id="checkBtn">Check Answers</button>
+        <button class="action secondary" id="showBtn">Show Answers</button>
+        <button class="action secondary" id="resetBtn">Try Again</button>
+      </div>
+
+      <div id="result" class="hidden" aria-live="polite"></div>
+    </section>
+
+  </div>
+
+  <section class="panel">
+    <h2>Think Like a Historian</h2>
+    <label for="reflection">
+      Why did the Revolt of 1857 spread to different centres across India?
+    </label>
+    <textarea id="reflection" rows="4"
+      placeholder="Write your explanation here..."></textarea>
+    <div class="buttons">
+      <button class="action green" id="copyBtn">Copy My Reflection</button>
+    </div>
+    <p id="copyFeedback" aria-live="polite"></p>
+  </section>
+
+</main>
+
+<footer>
+  Learn • Locate • Label • Reflect
+</footer>
+
+<script>
+"use strict";
+
+// Answer key: number and corresponding historical centre.
+const places = [
+  { id: 1, name: "Meerut" },
+  { id: 2, name: "Delhi" },
+  { id: 3, name: "Lucknow" },
+  { id: 4, name: "Kanpur" },
+  { id: 5, name: "Jhansi" },
+  { id: 6, name: "Barrackpore" }
+];
+
+const options = [
+  "Select a location",
+  "Barrackpore",
+  "Delhi",
+  "Jhansi",
+  "Kanpur",
+  "Lucknow",
+  "Meerut"
+];
+
+const questions = document.getElementById("questions");
+const result = document.getElementById("result");
+const markers = document.querySelectorAll(".marker");
+
+// Build the answer fields.
+places.forEach(place => {
+  const div = document.createElement("div");
+  div.className = "question";
+  div.id = "question-" + place.id;
+
+  const label = document.createElement("label");
+  label.htmlFor = "answer-" + place.id;
+  label.textContent = "Location " + place.id;
+
+  const select = document.createElement("select");
+  select.id = "answer-" + place.id;
+
+  options.forEach(optionText => {
+    const option = document.createElement("option");
+    option.value = optionText === "Select a location" ? "" : optionText;
+    option.textContent = optionText;
+    select.appendChild(option);
+  });
+
+  const feedback = document.createElement("div");
+  feedback.className = "feedback";
+  feedback.id = "feedback-" + place.id;
+  feedback.setAttribute("aria-live", "polite");
+
+  div.append(label, select, feedback);
+  questions.appendChild(div);
+
+  // Changing an answer clears its previous feedback.
+  select.addEventListener("change", () => {
+    feedback.textContent = "";
+    markers.forEach(marker => {
+      if (Number(marker.dataset.id) === place.id) {
+        marker.classList.remove("correct", "incorrect");
+      }
+    });
+    result.classList.add("hidden");
+  });
+});
+
+// Clicking a map marker moves the student to its answer field.
+markers.forEach(marker => {
+  marker.addEventListener("click", () => {
+    const select = document.getElementById(
+      "answer-" + marker.dataset.id
+    );
+    select.focus();
+    select.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+});
+
+// Check answers and calculate the score.
+document.getElementById("checkBtn").addEventListener("click", () => {
+  let score = 0;
+  let unanswered = 0;
+
+  places.forEach(place => {
+    const select = document.getElementById("answer-" + place.id);
+    const feedback = document.getElementById("feedback-" + place.id);
+    const marker = document.querySelector(
+      '.marker[data-id="' + place.id + '"]'
+    );
+
+    marker.classList.remove("correct", "incorrect");
+
+    if (!select.value) {
+      unanswered++;
+      feedback.textContent = "Please choose a location.";
+      feedback.style.color = "#9b6500";
+      return;
+    }
+
+    if (select.value === place.name) {
+      score++;
+      feedback.textContent = "Correct!";
+      feedback.style.color = "#168454";
+      marker.classList.add("correct");
+    } else {
+      feedback.textContent = "Not quite. Try again.";
+      feedback.style.color = "#c53e3e";
+      marker.classList.add("incorrect");
+    }
+  });
+
+  result.classList.remove("hidden");
+
+  let message = "<strong>Your Score: " + score +
+    " / " + places.length + "</strong><br>";
+
+  if (score === places.length) {
+    message += "Excellent! You identified all six centres correctly.";
+  } else {
+    message += "Review the locations and try again.";
+  }
+
+  if (unanswered > 0) {
+    message += "<br>Unanswered: " + unanswered;
+  }
+
+  result.innerHTML = message;
+});
+
+// Reveal the answer key.
+document.getElementById("showBtn").addEventListener("click", () => {
+  places.forEach(place => {
+    document.getElementById("answer-" + place.id).value = place.name;
+    document.getElementById("feedback-" + place.id).textContent =
+      "Answer: " + place.name;
+    document.getElementById("feedback-" + place.id).style.color =
+      "#168454";
+  });
+
+  markers.forEach(marker => {
+    marker.classList.remove("incorrect");
+    marker.classList.add("correct");
+  });
+
+  result.classList.remove("hidden");
+  result.innerHTML =
+    "<strong>Answer key displayed.</strong><br>" +
+    "Meerut, Delhi, Lucknow, Kanpur, Jhansi and Barrackpore.";
+});
+
+// Reset the activity.
+document.getElementById("resetBtn").addEventListener("click", () => {
+  places.forEach(place => {
+    document.getElementById("answer-" + place.id).value = "";
+    document.getElementById("feedback-" + place.id).textContent = "";
+  });
+
+  markers.forEach(marker => {
+    marker.classList.remove("correct", "incorrect");
+  });
+
+  result.classList.add("hidden");
+  document.getElementById("reflection").value = "";
+  document.getElementById("copyFeedback").textContent = "";
+});
+
+// Copy the student's written reflection.
+document.getElementById("copyBtn").addEventListener("click", async () => {
+  const text = document.getElementById("reflection").value.trim();
+  const feedback = document.getElementById("copyFeedback");
+
+  if (!text) {
+    feedback.textContent = "Write your reflection first.";
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+    feedback.textContent = "Reflection copied successfully.";
+  } catch (error) {
+    feedback.textContent =
+      "Clipboard access is unavailable. Select and copy your text manually.";
+  }
+});
+</script>
+
+</body>
+</html>
