@@ -1,10 +1,11 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Revolt of 1857 - Map Challenge</title>
+<title>The Revolt of 1857 - Map Challenge</title>
+
 <style>
 * { box-sizing: border-box; }
 
@@ -18,15 +19,15 @@ body {
 header {
   background: #18365c;
   color: white;
-  padding: 22px 12px;
   text-align: center;
+  padding: 20px 12px;
 }
 
 header h1 { margin: 0 0 8px; }
 header p { margin: 0; }
 
 main {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 20px auto;
   padding: 0 14px;
 }
@@ -34,8 +35,8 @@ main {
 .card {
   background: white;
   padding: 18px;
-  border-radius: 12px;
   border: 1px solid #d9e2ee;
+  border-radius: 12px;
   margin-bottom: 16px;
 }
 
@@ -48,16 +49,54 @@ h2 { color: #18365c; margin-top: 0; }
   align-items: start;
 }
 
-.mapbox { min-width: 0; }
+.map-wrap {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+}
 
-svg {
+#india {
   display: block;
   width: 100%;
   height: auto;
-  background: #fafdff;
+  background: #fff;
   border: 1px solid #d9e2ee;
   border-radius: 8px;
+  touch-action: manipulation;
 }
+
+.target { cursor: pointer; }
+
+.target circle {
+  fill: #245e9e;
+  stroke: white;
+  stroke-width: 3;
+}
+
+.target .number {
+  fill: white;
+  font-size: 15px;
+  font-weight: bold;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+
+.target .label {
+  fill: #15365e;
+  font-size: 12px;
+  font-weight: bold;
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: white;
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.target.correct circle { fill: #168454; }
+.target.incorrect circle { fill: #c53e3e; }
+.target.over circle { fill: #dc9b18; }
 
 .wordbank {
   display: flex;
@@ -84,38 +123,9 @@ svg {
 }
 
 .word.used {
-  opacity: .45;
+  opacity: .5;
   text-decoration: line-through;
 }
-
-.target { cursor: pointer; }
-.target circle {
-  fill: #245e9e;
-  stroke: white;
-  stroke-width: 3;
-}
-.target .number {
-  fill: white;
-  font-size: 15px;
-  font-weight: bold;
-  text-anchor: middle;
-  dominant-baseline: central;
-  pointer-events: none;
-}
-.target .label {
-  fill: #15365e;
-  font-size: 12px;
-  font-weight: bold;
-  text-anchor: middle;
-  paint-order: stroke;
-  stroke: white;
-  stroke-width: 4px;
-  stroke-linejoin: round;
-  pointer-events: none;
-}
-.target.correct circle { fill: #168454; }
-.target.incorrect circle { fill: #c53e3e; }
-.target.over circle { fill: #dc9b18; }
 
 button {
   border: 0;
@@ -145,7 +155,7 @@ button.secondary {
   padding: 14px;
   border-radius: 8px;
   margin-top: 14px;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 textarea {
@@ -162,11 +172,18 @@ textarea {
   line-height: 1.5;
 }
 
+#status {
+  min-height: 24px;
+  line-height: 1.5;
+}
+
 @media(max-width: 740px) {
   .layout { grid-template-columns: 1fr; }
+  .map-wrap { max-width: 500px; }
 }
 </style>
 </head>
+
 <body>
 
 <header>
@@ -175,119 +192,118 @@ textarea {
 </header>
 
 <main>
+
   <section class="card">
     <h2>Your Mission</h2>
-    Drag each place name onto the correct numbered location.
-    You can also tap a name and then tap its numbered circle.
+    Drag each place name onto the correct numbered circle.
+    On a touchscreen, tap a name and then tap its numbered circle.
     Click "Check Answers" when you finish.
   </section>
 
   <div class="layout">
-    <section class="card mapbox">
-      <h2>India Map</h2>
 
-      <svg id="india" viewBox="0 0 500 570"
-           role="img" aria-label="Schematic map of India with numbered targets">
+    <section class="card">
+      <h2>Political Map of India</h2>
 
-        <defs>
-          <clipPath id="indiaClip">
-            <path id="outline"
-              d="M130 45
-                 L175 34 L220 43 L260 57 L291 76
-                 L324 91 L352 109 L375 110 L402 120
-                 L430 132 L414 146 L393 151 L382 171
-                 L367 188 L351 202 L339 225
-                 L326 252 L311 279 L302 309
-                 L286 339 L278 373 L263 409
-                 L246 448 L231 483 L217 516
-                 L204 489 L190 453 L176 420
-                 L160 390 L143 360 L126 333
-                 L107 304 L91 274 L77 245
-                 L68 217 L82 193 L99 172
-                 L107 145 L118 121 L119 92 Z"/>
-          </clipPath>
-        </defs>
+      <div class="map-wrap">
+        <svg id="india"
+             viewBox="0 0 500 570"
+             role="img"
+             aria-label="Political map of India with six numbered locations">
 
-        <!-- Schematic outline and state-boundary illustration -->
-        <use href="#outline" fill="#f8f0dc" stroke="#526f5d"
-             stroke-width="3"/>
+          <!-- Real political map from Wikimedia Commons -->
+          <image
+            href="https://commons.wikimedia.org/wiki/Special:Redirect/file/India_states_and_union_territories_map.svg"
+            x="0"
+            y="0"
+            width="500"
+            height="565"
+            preserveAspectRatio="xMidYMid meet"
+          />
 
-        <g clip-path="url(#indiaClip)" fill="none"
-           stroke="#c3b79e" stroke-width="1.5">
-          <path d="M95 110 L170 125 L240 105 L315 125 L390 145"/>
-          <path d="M82 160 L145 166 L200 150 L267 163 L340 180 L400 170"/>
-          <path d="M75 210 L135 207 L188 190 L250 205 L320 215 L380 205"/>
-          <path d="M80 255 L145 246 L202 235 L260 250 L315 260 L355 245"/>
-          <path d="M100 300 L157 285 L210 290 L275 302 L325 285"/>
-          <path d="M120 340 L170 325 L220 343 L285 335"/>
-          <path d="M145 380 L190 365 L240 385 L275 370"/>
-          <path d="M165 420 L207 410 L253 420"/>
-          <path d="M118 120 L145 166 L135 207 L145 246 L157 285 L170 325"/>
-          <path d="M170 125 L200 150 L188 190 L202 235 L210 290"/>
-          <path d="M240 105 L267 163 L250 205 L260 250 L275 302 L285 335"/>
-          <path d="M315 125 L340 180 L320 215 L315 260 L325 285"/>
-          <path d="M190 453 L207 410 L190 365 L210 290"/>
-        </g>
+          <!--
+          Approximate city positions on the displayed map.
+          Adjust these coordinates if the map image is resized
+          or its cropping changes.
+          -->
 
-        <text x="250" y="548" text-anchor="middle"
-              font-size="11" fill="#66778b">
-          Schematic practice map — not to scale
-        </text>
+          <!-- 1: Meerut -->
+          <g class="target" data-id="1"
+             tabindex="0" role="button"
+             aria-label="Location 1"
+             transform="translate(222 181)">
+            <circle r="15"/>
+            <text class="number" y="1">1</text>
+            <text class="label" y="-20"></text>
+          </g>
 
-        <!-- Numbered drop targets -->
-        <g class="target" data-id="1" tabindex="0" role="button"
-           aria-label="Location 1" transform="translate(190 130)">
-          <circle r="17"/>
-          <text class="number" y="1">1</text>
-          <text class="label" y="-23"></text>
-        </g>
+          <!-- 2: Delhi -->
+          <g class="target" data-id="2"
+             tabindex="0" role="button"
+             aria-label="Location 2"
+             transform="translate(216 199)">
+            <circle r="15"/>
+            <text class="number" y="1">2</text>
+            <text class="label" y="-20"></text>
+          </g>
 
-        <g class="target" data-id="2" tabindex="0" role="button"
-           aria-label="Location 2" transform="translate(177 153)">
-          <circle r="17"/>
-          <text class="number" y="1">2</text>
-          <text class="label" y="-23"></text>
-        </g>
+          <!-- 3: Lucknow -->
+          <g class="target" data-id="3"
+             tabindex="0" role="button"
+             aria-label="Location 3"
+             transform="translate(267 224)">
+            <circle r="15"/>
+            <text class="number" y="1">3</text>
+            <text class="label" y="-20"></text>
+          </g>
 
-        <g class="target" data-id="3" tabindex="0" role="button"
-           aria-label="Location 3" transform="translate(247 195)">
-          <circle r="17"/>
-          <text class="number" y="1">3</text>
-          <text class="label" y="-23"></text>
-        </g>
+          <!-- 4: Kanpur -->
+          <g class="target" data-id="4"
+             tabindex="0" role="button"
+             aria-label="Location 4"
+             transform="translate(251 246)">
+            <circle r="15"/>
+            <text class="number" y="1">4</text>
+            <text class="label" y="-20"></text>
+          </g>
 
-        <g class="target" data-id="4" tabindex="0" role="button"
-           aria-label="Location 4" transform="translate(225 224)">
-          <circle r="17"/>
-          <text class="number" y="1">4</text>
-          <text class="label" y="-23"></text>
-        </g>
+          <!-- 5: Jhansi -->
+          <g class="target" data-id="5"
+             tabindex="0" role="button"
+             aria-label="Location 5"
+             transform="translate(224 267)">
+            <circle r="15"/>
+            <text class="number" y="1">5</text>
+            <text class="label" y="-20"></text>
+          </g>
 
-        <g class="target" data-id="5" tabindex="0" role="button"
-           aria-label="Location 5" transform="translate(178 267)">
-          <circle r="17"/>
-          <text class="number" y="1">5</text>
-          <text class="label" y="-23"></text>
-        </g>
+          <!-- 6: Barrackpore, near Kolkata -->
+          <g class="target" data-id="6"
+             tabindex="0" role="button"
+             aria-label="Location 6"
+             transform="translate(337 247)">
+            <circle r="15"/>
+            <text class="number" y="1">6</text>
+            <text class="label" y="-20"></text>
+          </g>
 
-        <g class="target" data-id="6" tabindex="0" role="button"
-           aria-label="Location 6" transform="translate(320 193)">
-          <circle r="17"/>
-          <text class="number" y="1">6</text>
-          <text class="label" y="-23"></text>
-        </g>
-      </svg>
+        </svg>
+      </div>
 
       <p class="small">
-        This built-in illustration is schematic. The borders are illustrative,
-        not an accurate representation of India's states. Use a verified
-        political map for formal geographical assessment.
+        Map source:
+        <a href="https://commons.wikimedia.org/wiki/File:India_states_and_union_territories_map.svg"
+           target="_blank" rel="noopener">
+          Wikimedia Commons
+        </a>.
+        The numbered markers are approximate and may need minor
+        adjustment to match the map image precisely.
       </p>
     </section>
 
     <section class="card">
       <h2>Word Bank</h2>
-      <p>Drag a label to a numbered circle.</p>
+      <p>Drag a label to a numbered circle, or tap the label first.</p>
 
       <div class="wordbank" id="wordbank">
         <div class="word" draggable="true" tabindex="0"
@@ -301,202 +317,4 @@ textarea {
         <div class="word" draggable="true" tabindex="0"
              data-name="Jhansi">Jhansi</div>
         <div class="word" draggable="true" tabindex="0"
-             data-name="Barrackpore">Barrackpore</div>
-      </div>
-
-      <p id="status" aria-live="polite">Choose a label to begin.</p>
-
-      <div class="buttons">
-        <button id="check">Check Answers</button>
-        <button class="secondary" id="show">Show Answers</button>
-        <button class="secondary" id="reset">Try Again</button>
-      </div>
-
-      <div id="result" hidden aria-live="polite"></div>
-    </section>
-  </div>
-
-  <section class="card">
-    <h2>Think Like a Historian</h2>
-    <p>Why did the Revolt of 1857 spread to different centres?</p>
-    <textarea id="reflection" rows="4"
-              placeholder="Write your answer here..."></textarea>
-  </section>
-</main>
-
-<script>
-const answers = {
-  1: "Meerut",
-  2: "Delhi",
-  3: "Lucknow",
-  4: "Kanpur",
-  5: "Jhansi",
-  6: "Barrackpore"
-};
-
-const placed = {};
-let selected = null;
-
-const words = [...document.querySelectorAll(".word")];
-const targets = [...document.querySelectorAll(".target")];
-const status = document.getElementById("status");
-const result = document.getElementById("result");
-
-function refresh() {
-  words.forEach(word => {
-    const used = Object.values(placed).includes(word.dataset.name);
-    word.classList.toggle("used", used);
-    word.classList.toggle("selected", word.dataset.name === selected);
-  });
-
-  targets.forEach(target => {
-    const id = target.dataset.id;
-    const label = target.querySelector(".label");
-
-    target.classList.remove("correct", "incorrect", "over");
-    label.textContent = placed[id] || "";
-    target.setAttribute(
-      "aria-label",
-      "Location " + id + (placed[id] ? ": " + placed[id] : "")
-    );
-  });
-}
-
-function chooseWord(name) {
-  selected = name;
-  status.textContent = name +
-    " selected. Now tap a numbered circle to place it.";
-  refresh();
-}
-
-function placeLabel(id, name) {
-  if (!name) return;
-
-  // Remove the same label from any previous location.
-  Object.keys(placed).forEach(key => {
-    if (placed[key] === name) delete placed[key];
-  });
-
-  placed[id] = name;
-  selected = null;
-  result.hidden = true;
-  status.textContent = name + " placed at location " + id + ".";
-  refresh();
-}
-
-// Mouse drag and touchscreen/click selection.
-words.forEach(word => {
-  word.addEventListener("dragstart", event => {
-    selected = word.dataset.name;
-    event.dataTransfer.setData("text/plain", selected);
-    event.dataTransfer.effectAllowed = "move";
-    refresh();
-  });
-
-  word.addEventListener("click", () => {
-    chooseWord(word.dataset.name);
-  });
-
-  word.addEventListener("keydown", event => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      chooseWord(word.dataset.name);
-    }
-  });
-});
-
-targets.forEach(target => {
-  target.addEventListener("dragover", event => {
-    event.preventDefault();
-    target.classList.add("over");
-  });
-
-  target.addEventListener("dragleave", () => {
-    target.classList.remove("over");
-  });
-
-  target.addEventListener("drop", event => {
-    event.preventDefault();
-    target.classList.remove("over");
-
-    const name = event.dataTransfer.getData("text/plain") || selected;
-    if (name && Object.values(answers).includes(name)) {
-      placeLabel(target.dataset.id, name);
-    }
-  });
-
-  target.addEventListener("click", () => {
-    if (selected) {
-      placeLabel(target.dataset.id, selected);
-    } else if (placed[target.dataset.id]) {
-      delete placed[target.dataset.id];
-      refresh();
-      status.textContent = "Label removed. Select a word to place it again.";
-    } else {
-      status.textContent = "First select a name from the word bank.";
-    }
-  });
-
-  target.addEventListener("keydown", event => {
-    if ((event.key === "Enter" || event.key === " ") && selected) {
-      event.preventDefault();
-      placeLabel(target.dataset.id, selected);
-    }
-  });
-});
-
-// Check the six locations.
-document.getElementById("check").addEventListener("click", () => {
-  let score = 0;
-  let missing = 0;
-
-  targets.forEach(target => {
-    const id = target.dataset.id;
-    target.classList.remove("correct", "incorrect");
-
-    if (!placed[id]) {
-      missing++;
-    } else if (placed[id] === answers[id]) {
-      score++;
-      target.classList.add("correct");
-    } else {
-      target.classList.add("incorrect");
-    }
-  });
-
-  result.hidden = false;
-  result.innerHTML = "<strong>Your score: " + score + " / 6</strong><br>" +
-    (score === 6
-      ? "Excellent! All six answers are correct."
-      : "Green = correct. Red = incorrect. Review and try again.") +
-    (missing ? "<br>Locations still to label: " + missing : "");
-});
-
-// Show the complete answer key.
-document.getElementById("show").addEventListener("click", () => {
-  Object.keys(answers).forEach(id => placed[id] = answers[id]);
-  selected = null;
-  refresh();
-  targets.forEach(target => target.classList.add("correct"));
-
-  result.hidden = false;
-  result.innerHTML =
-    "<strong>Answer Key</strong><br>" +
-    "1. Meerut<br>2. Delhi<br>3. Lucknow<br>" +
-    "4. Kanpur<br>5. Jhansi<br>6. Barrackpore";
-  status.textContent = "Answer key displayed.";
-});
-
-// Reset for another attempt.
-document.getElementById("reset").addEventListener("click", () => {
-  Object.keys(placed).forEach(id => delete placed[id]);
-  selected = null;
-  refresh();
-  result.hidden = true;
-  status.textContent = "Choose a label to begin.";
-});
-
-refresh();
-</script>
-</body>
-</html>
+             data-name="
